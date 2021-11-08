@@ -5,7 +5,7 @@ import numpy as np
 import  torch
 import torch.nn.functional as F
 from scipy.io import loadmat
-from util.load_mats import transferBFM09
+from util.load_mats import transferBFM09, fullBFM09
 import os
 
 def perspective_projection(focal, center):
@@ -34,13 +34,18 @@ class ParametricFaceModel:
                 focal=1015.,
                 center=112.,
                 is_train=True,
-                default_name='BFM_model_front.mat'):
-        
+                default_name='BFM_model_front.mat',
+                full_model_name='BFM_model_full.mat'):
+
         if not os.path.isfile(os.path.join(bfm_folder, default_name)):
             transferBFM09(bfm_folder)
-        model = loadmat(os.path.join(bfm_folder, default_name))
+        if not os.path.isfile(os.path.join(bfm_folder, full_model_name)):
+            fullBFM09(bfm_folder)
+        model = loadmat(os.path.join(bfm_folder, full_model_name))
+        model_front = loadmat(os.path.join(bfm_folder, default_name))
         # mean face shape. [3*N,1]
         self.mean_shape = model['meanshape'].astype(np.float32)
+        self.mean_shape_front = model_front['meanshape'].astype(np.float32)
         # identity basis. [3*N,80]
         self.id_base = model['idBase'].astype(np.float32)
         # expression basis. [3*N,64]
@@ -66,7 +71,8 @@ class ParametricFaceModel:
         
         if recenter:
             mean_shape = self.mean_shape.reshape([-1, 3])
-            mean_shape = mean_shape - np.mean(mean_shape, axis=0, keepdims=True)
+            mean_shape_front = self.mean_shape_front.reshape([-1, 3])
+            mean_shape = mean_shape - np.mean(mean_shape_front, axis=0, keepdims=True)
             self.mean_shape = mean_shape.reshape([-1, 1])
 
         self.persc_proj = perspective_projection(focal, center)
