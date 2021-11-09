@@ -2,16 +2,11 @@
 """
 
 import os
-from options.test_options import TestOptions
-from data import create_dataset
 from models import create_model
 from util.preprocess import align_img
-from PIL import Image
 import numpy as np
 from util.load_mats import load_lm3d
 import torch 
-from data.flist_dataset import default_flist_reader
-from scipy.io import loadmat, savemat
 from argparse import Namespace
 import inspect
 
