@@ -170,7 +170,7 @@ def fullBFM09(bfm_folder='BFM'):
     # tri = other_info['tri']
     tri_mask2 = other_info['tri_mask2']
 
-    with open('BFM/trilist.pkl','rb') as fp:
+    with open(osp.join(bfm_folder, 'trilist.pkl'),'rb') as fp:
         tri = pickle.load(fp)
 
 
