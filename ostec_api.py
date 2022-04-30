@@ -82,7 +82,7 @@ class Deep3dModel:
             recon_dict['vertices'] = face_shape.cpu().numpy()[0]
             recon_dict['vertices_rotated'] = face_vertex.cpu().numpy()[0] #(self.pred_shape @ rotation + self.pred_coeffs_dict['trans'].unsqueeze(1)).cpu().numpy()[0]
             recon_dict['vertices_rotated'][..., -1] = recon_dict['vertices_rotated'][..., -1] * -1
-            recon_dict['trilist'] = self.model.facemodel.face_buf.cpu().numpy()
+            recon_dict['trilist'] = self.model.facemodel.face_buf.cpu().numpy()+1
             recon_dict['euler_angles'] = pred_coeffs['angle'][0]
             recon_dict['input'] = im_hq_tensor[0].cpu().numpy()
             recon_dict['dense_lms'] = face_proj.cpu().numpy()[0] * 5
